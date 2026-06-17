@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { recalculateRewards, LeapterRewardResult } from '@/lib/gamification';
 import { CelebrationModal } from '@/components/community/CelebrationModal';
 import { roles } from '@/data/ai-guide';
+import { Plus, Sparkles, Trophy } from 'lucide-react';
 
 // Discipline filter options: "All" + the 8 roles from the homepage
 const DISCIPLINE_FILTERS = ['All', ...roles.filter(r => r !== 'All Roles')];
@@ -443,7 +444,7 @@ export default function FeedPage() {
     : posts.filter(post => post.disciplines?.includes(selectedDiscipline));
 
   return (
-    <main className="min-h-screen pt-24 pb-12 px-6 bg-[var(--bg)]">
+    <main className="min-h-screen px-6 pb-12 pt-32 md:pt-28 bg-[var(--bg)]">
       <Navbar />
 
       {/* Gamification Celebration Modal */}
@@ -456,28 +457,49 @@ export default function FeedPage() {
         actionType={gamificationResult?.type || 'post'}
       />
       
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-3xl font-medium tracking-tight mb-2 text-[var(--text)]">Community Feed</h1>
-            <p className="text-[var(--text-muted)] font-light">See how M Moser is leveraging AI globally.</p>
+      <div className="max-w-3xl mx-auto">
+        <div className="mb-8 overflow-hidden rounded-[8px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_18px_60px_rgba(29,29,27,0.08)]">
+          <div className="brand-rule" />
+          <div className="flex flex-col gap-6 p-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="mb-5 inline-flex items-center gap-2 rounded-[8px] border border-[var(--border)] bg-[var(--surface-sub)] px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                <Sparkles className="h-4 w-4 text-[var(--accent)]" />
+                AI Practice Community
+              </div>
+              <h1 className="text-display text-5xl leading-[0.9] text-[var(--text)] md:text-6xl">
+                Community Feed
+              </h1>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--text-muted)]">
+                Share workflows, prompts, project examples, and lessons learned. Points and badges
+                reward useful participation across the community.
+              </p>
+            </div>
+            <button
+              onClick={handleOpenCreate}
+              className="inline-flex items-center justify-center gap-2 rounded-[8px] bg-[var(--accent)] px-5 py-3 text-sm font-bold uppercase tracking-[0.12em] text-[var(--accent-fg)] hover:opacity-90"
+            >
+              <Plus className="h-4 w-4" />
+              New Post
+            </button>
           </div>
-          <button 
-            onClick={handleOpenCreate}
-            className="bg-[var(--accent)] text-[var(--accent-fg)] px-5 py-2.5 rounded-full font-medium text-sm hover:opacity-80 transition-opacity"
-          >
-            New Post
-          </button>
         </div>
 
-        {/* Discipline filter — pill buttons (scrollable on mobile) */}
+        <div className="mb-8 flex items-start gap-3 rounded-[8px] border border-[var(--border)] bg-[var(--surface)] p-4 text-sm text-[var(--text-muted)]">
+          <Trophy className="mt-0.5 h-5 w-5 shrink-0 text-[var(--accent)]" />
+          <p>
+            Community rewards run automatically after posts, replies, and new-tool experiments.
+            The scoring service stays behind the scenes; the experience here is points, badges,
+            and shared practice.
+          </p>
+        </div>
+
         <div className="mb-8 -mx-1">
           <div className="flex flex-wrap gap-2 px-1">
             {DISCIPLINE_FILTERS.map((discipline) => (
               <button
                 key={discipline}
                 onClick={() => setSelectedDiscipline(discipline)}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                className={`px-4 py-2 rounded-[8px] text-xs font-bold transition-all whitespace-nowrap ${
                   selectedDiscipline === discipline
                     ? 'bg-[var(--text)] text-[var(--bg)]'
                     : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--border-strong)] hover:text-[var(--text)]'

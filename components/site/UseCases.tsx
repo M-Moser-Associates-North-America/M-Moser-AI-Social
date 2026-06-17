@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { platforms, roles, useCases } from '@/data/ai-guide';
+import { PlatformLogo } from '@/components/ui/PlatformLogo';
 
 /**
  * Role-based use-cases explorer — shows practical AI applications per role.
@@ -18,18 +18,17 @@ export function UseCases() {
 
   return (
     <section
-      className="py-32 px-6 max-w-7xl mx-auto relative z-10 border-t border-[var(--site-border)] scroll-mt-16"
+      className="relative z-10 mx-auto max-w-7xl scroll-mt-16 px-6 py-16 md:py-20"
       id="use-cases"
     >
-      {/* Section header */}
-      <div className="mb-16">
+      <div className="mb-14 border-b border-[var(--site-border)] pb-8">
         <div className="flex items-center gap-4 mb-6">
-          <span className="font-[var(--font-display)] text-3xl text-[var(--site-text-muted)]">
+          <span className="text-display text-3xl text-[var(--mint)]">
             03
           </span>
-          <h2 className="font-[var(--font-display)] text-4xl md:text-5xl tracking-tight">
+          <h1 className="text-display text-5xl text-[var(--site-text)] md:text-7xl">
             Role-Based Use Cases
-          </h2>
+          </h1>
         </div>
         <p className="text-[var(--site-text-muted)] text-lg max-w-2xl">
           What does this actually mean for your job? Filter by role to see practical applications of
@@ -39,10 +38,9 @@ export function UseCases() {
 
       {/* Role filter pills */}
       <div className="flex flex-wrap gap-3 mb-12">
-        {/* "All Roles" button */}
         <button
           onClick={() => setActiveRole(null)}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+          className={`px-4 py-2 rounded-[8px] text-sm font-bold transition-all ${
             activeRole === null
               ? 'bg-[var(--site-text)] text-[var(--site-bg)]'
               : 'bg-[var(--site-surface)] text-[var(--site-text-muted)] hover:bg-[var(--site-surface-hover)] hover:text-[var(--site-text)]'
@@ -57,7 +55,7 @@ export function UseCases() {
               <button
                 key={role}
                 onClick={() => setActiveRole(role)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-[8px] text-sm font-bold transition-all ${
                   activeRole === role
                     ? 'bg-[var(--site-text)] text-[var(--site-bg)]'
                     : 'bg-[var(--site-surface)] text-[var(--site-text-muted)] hover:bg-[var(--site-surface-hover)] hover:text-[var(--site-text)]'
@@ -83,26 +81,17 @@ export function UseCases() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
-                className="p-8 rounded-2xl border border-[var(--site-border)] bg-[var(--site-bg)] hover:border-[var(--site-text-muted)] transition-colors group flex flex-col"
+                className="p-6 rounded-[8px] border border-[var(--site-border)] bg-[var(--site-surface)] hover:border-[var(--site-text-muted)] transition-colors group flex flex-col"
               >
                 {/* Platform logo + name */}
                 <div className="flex items-center gap-3 mb-6">
-                  {platform && (
-                    <Image
-                      src={platform.avatar}
-                      alt={platform.name}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full object-cover border border-[var(--site-border)] shrink-0"
-                      referrerPolicy="no-referrer"
-                    />
-                  )}
+                  {platform && <PlatformLogo name={platform.name} logo={platform.logo} size={32} />}
                   <span className="text-xs uppercase tracking-widest text-[var(--site-text-muted)] font-semibold">
                     {platform?.name}
                   </span>
                 </div>
 
-                <h3 className="font-[var(--font-display)] text-xl mb-4">{uc.headline}</h3>
+                <h3 className="text-display text-2xl mb-4">{uc.headline}</h3>
                 <p className="text-sm text-[var(--site-text-muted)] leading-relaxed mb-8 flex-1">
                   {uc.description}
                 </p>

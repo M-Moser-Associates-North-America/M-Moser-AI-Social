@@ -37,7 +37,7 @@ interface CelebrationModalProps {
   pointsEarned: number;
   totalPoints: number;
   badgeEarned: string | null;
-  actionType: 'post' | 'try_it';
+  actionType: 'post' | 'try_it' | 'workshop';
 }
 
 export function CelebrationModal({
@@ -110,11 +110,17 @@ export function CelebrationModal({
           </div>
 
           <h2 className="mb-2 text-2xl font-bold tracking-tight text-[var(--text)]">
-            {actionType === 'post' ? 'Post Published!' : 'Thanks for trying!'}
+            {actionType === 'workshop'
+              ? 'Workshop Complete!'
+              : actionType === 'post'
+                ? 'Post Published!'
+                : 'Thanks for trying!'}
           </h2>
           
           <p className="mb-8 text-sm text-[var(--text-muted)] leading-relaxed">
-            Your contribution helps the community grow. Keep up the great work!
+            {actionType === 'workshop'
+              ? 'Your learning progress has been added to the community reward system.'
+              : 'Your contribution helps the community grow. Keep up the great work!'}
           </p>
 
           <div className="space-y-4">

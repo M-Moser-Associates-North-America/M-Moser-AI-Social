@@ -1,29 +1,59 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { supabase } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { Sun, Moon } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { ChevronDown, LogIn, LogOut, Moon, Sun } from 'lucide-react';
+import mmoserLogo from '@/assets/mmoser-logo-rgb.jpg';
+import { supabase } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
 
-/**
- * Site-wide navigation bar, fixed at the top of every page.
- *
- * On the homepage ("/") it also shows two smooth-scroll links:
- *   • Platforms → scrolls to #platforms
- *   • Ecosystems → scrolls to #ecosystems
- *
- * On all other pages those links are hidden so the Navbar stays uncluttered.
- */
+const navItems = [
+  {
+    href: '/',
+    label: 'Home',
+    match: ['/'],
+  },
+  {
+    href: '/guide',
+    label: 'AI Guide',
+    match: ['/guide'],
+    menu: [
+      { href: '/guide', label: 'Overview', description: 'One-page AI guide' },
+      { href: '/guide#platforms', label: 'Platforms', description: 'Tool mental models' },
+      { href: '/guide#ecosystems', label: 'Ecosystems', description: 'Features and workflows' },
+      { href: '/guide#use-cases', label: 'Use Cases', description: 'Role-based examples' },
+    ],
+  },
+  {
+    href: '/workshops',
+    label: 'Workshops',
+    match: ['/workshops'],
+    menu: [
+      { href: '/workshops', label: 'Workshop OS', description: 'Series roadmap' },
+      { href: '/workshops/session-1', label: 'Session 1', description: 'Core foundations' },
+    ],
+  },
+  {
+    href: '/feed',
+    label: 'Community',
+    match: ['/feed', '/leaderboard', '/profile'],
+    menu: [
+      { href: '/feed', label: 'Feed', description: 'Shared AI workflows' },
+      { href: '/leaderboard', label: 'Leaderboard', description: 'Points and badges' },
+      { href: '/profile', label: 'Profile', description: 'Your saved practice' },
+    ],
+  },
+];
+
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const pathname = usePathname();
   const { setTheme, resolvedTheme } = useTheme();
 
-  // Subscribe to auth state so the Navbar always reflects the current user
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -42,126 +72,135 @@ export function Navbar() {
     await supabase.auth.signOut();
   };
 
-  /** Smooth-scroll to a section by its HTML id (homepage only). */
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const isHomepage = pathname === '/';
+  const isActive = (matches: string[]) =>
+    matches.some((match) => (match === '/' ? pathname === '/' : pathname.startsWith(match)));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-[var(--surface)]/80 backdrop-blur-md border-b border-[var(--border)]">
-      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-
-        {/* Logo — links back to the homepage */}
+    <nav className="fixed left-0 right-0 top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/90 shadow-[0_18px_60px_rgba(29,29,27,0.08)] backdrop-blur-xl">
+      <div className="brand-rule" />
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-[var(--text)] hover:opacity-70 transition-opacity"
+          className="flex min-w-0 items-center gap-3 text-[var(--text)] hover:opacity-75"
+          aria-label="M Moser AI home"
         >
-          <span className="font-semibold tracking-tight text-sm">M Moser AI</span>
+          <Image
+            src={mmoserLogo}
+            alt="M Moser Associates"
+            width={160}
+            height={15}
+            priority
+            className="h-auto w-32 sm:w-40"
+          />
+          <span className="hidden border-l border-[var(--border)] pl-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)] lg:block">
+            AI
+          </span>
         </Link>
 
-        {/* Primary navigation links */}
-        <div className="hidden md:flex items-center text-xs font-medium tracking-wide text-[var(--text-muted)]">
+        <div className="hidden flex-1 items-center justify-center gap-1 md:flex">
+          {navItems.map((item) => {
+            const active = isActive(item.match);
+            return (
+              <div key={item.href} className="group relative">
+                <Link
+                  href={item.href}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] transition-colors',
+                    active
+                      ? 'bg-[var(--text)] text-[var(--bg)]'
+                      : 'text-[var(--text-muted)] hover:bg-[var(--surface-sub)] hover:text-[var(--text)]'
+                  )}
+                >
+                  {item.label}
+                  {item.menu && <ChevronDown className="h-3.5 w-3.5" />}
+                </Link>
 
-          {/* Homepage-only scroll links */}
-          <AnimatePresence>
-            {isHomepage && (
-              <motion.div
-                initial={{ opacity: 0, width: 0, x: 20, pointerEvents: 'none' }}
-                animate={{ opacity: 1, width: 'auto', x: 0, pointerEvents: 'auto' }}
-                exit={{ opacity: 0, width: 0, x: 20, pointerEvents: 'none' }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="overflow-hidden whitespace-nowrap"
-              >
-                <div className="flex items-center gap-8 pr-8">
-                  <button
-                    onClick={() => scrollToSection('platforms')}
-                    className="hover:text-[var(--text)] transition-colors"
-                  >
-                    Platforms
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('ecosystems')}
-                    className="hover:text-[var(--text)] transition-colors"
-                  >
-                    Ecosystems
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('use-cases')}
-                    className="hover:text-[var(--text)] transition-colors"
-                  >
-                    Use Cases
-                  </button>
-
-                  {/* Visual divider between homepage sections and app links */}
-                  <span className="text-[var(--text-faint)] select-none">|</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Hub app links — redirect to login when user is not authenticated */}
-          <div className="flex items-center gap-8">
-            <Link
-              href={user ? '/feed' : '/login'}
-              className="hover:text-[var(--text)] transition-colors"
-            >
-              Feed
-            </Link>
-            <Link
-              href={user ? '/leaderboard' : '/login'}
-              className="hover:text-[var(--text)] transition-colors"
-            >
-              Leaderboard
-            </Link>
-            <Link
-              href={user ? '/profile' : '/login'}
-              className="hover:text-[var(--text)] transition-colors"
-            >
-              Profile
-            </Link>
-          </div>
+                {item.menu && (
+                  <div className="invisible absolute left-0 top-full z-50 w-72 translate-y-1 pt-3 opacity-0 transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                    <div className="rounded-[8px] border border-[var(--border)] bg-[var(--surface)] p-2 shadow-[0_24px_70px_rgba(29,29,27,0.16)]">
+                      {item.menu.map((menuItem) => (
+                        <Link
+                          key={menuItem.href}
+                          href={menuItem.href}
+                          className="block rounded-[8px] p-3 hover:bg-[var(--surface-sub)]"
+                        >
+                          <span className="block text-sm font-bold text-[var(--text)]">
+                            {menuItem.label}
+                          </span>
+                          <span className="mt-1 block text-xs leading-relaxed text-[var(--text-muted)]">
+                            {menuItem.description}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Right side: auth button + theme toggle */}
-        <div className="flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title="Toggle theme"
+            className="grid h-9 w-9 place-items-center rounded-[8px] border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-sub)] hover:text-[var(--text)]"
+          >
+            {resolvedTheme === 'dark' ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </button>
+
           {user ? (
             <button
               onClick={handleSignOut}
-              className="text-xs font-medium text-[var(--text)] bg-[var(--border)] hover:bg-[var(--border-strong)] px-4 py-1.5 rounded-full transition-colors"
+              className="grid h-9 w-9 place-items-center rounded-[8px] bg-[var(--text)] text-[var(--bg)] hover:opacity-85 sm:w-auto sm:px-3"
+              aria-label="Sign out"
+              title="Sign out"
             >
-              Sign Out
+              <LogOut className="h-4 w-4 sm:hidden" />
+              <span className="hidden text-xs font-bold uppercase tracking-[0.12em] sm:inline">
+                Sign Out
+              </span>
             </button>
           ) : (
             <Link
               href="/login"
-              className="text-xs font-medium text-[var(--text)] bg-[var(--border)] hover:bg-[var(--border-strong)] px-4 py-1.5 rounded-full transition-colors"
+              className="grid h-9 w-9 place-items-center rounded-[8px] bg-[var(--text)] text-[var(--bg)] hover:opacity-85 sm:w-auto sm:px-3"
+              aria-label="Sign in"
+              title="Sign in"
             >
-              Sign In
+              <LogIn className="h-4 w-4 sm:hidden" />
+              <span className="hidden text-xs font-bold uppercase tracking-[0.12em] sm:inline">
+                Sign In
+              </span>
             </Link>
           )}
-
-          {/* Theme toggle — sun in dark mode (click to go light), moon in light mode (click to go dark) */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--border)] transition-colors"
-          >
-            {resolvedTheme === 'dark' ? (
-              <Sun className="w-4 h-4" />
-            ) : (
-              <Moon className="w-4 h-4" />
-            )}
-          </button>
         </div>
+      </div>
+
+      <div className="flex gap-1 overflow-x-auto border-t border-[var(--border)] px-4 py-2 md:hidden">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              'shrink-0 rounded-[8px] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.1em]',
+              isActive(item.match)
+                ? 'bg-[var(--text)] text-[var(--bg)]'
+                : 'text-[var(--text-muted)] hover:bg-[var(--surface-sub)]'
+            )}
+          >
+            {item.label}
+          </Link>
+        ))}
       </div>
     </nav>
   );

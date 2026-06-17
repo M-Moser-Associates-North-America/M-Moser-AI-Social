@@ -3,21 +3,17 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 
-/** Full-screen hero section with parallax video background. */
 export function Hero() {
   const { scrollY } = useScroll();
-  // Parallax: background moves down as user scrolls
   const y = useTransform(scrollY, [0, 1000], [0, 400]);
-  // Content fades out as user scrolls
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
-      {/* Parallax video background */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={{ y }}
-      >
+    <section
+      id="overview"
+      className="relative h-screen w-full overflow-hidden flex items-center justify-center scroll-mt-28"
+    >
+      <motion.div className="absolute inset-0 z-0" style={{ y }}>
         <video
           autoPlay
           muted
@@ -30,11 +26,9 @@ export function Hero() {
             type="video/mp4"
           />
         </video>
-        {/* Gradient fade to background colour at the bottom */}
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,var(--site-bg)_100%)]" />
       </motion.div>
 
-      {/* Centred headline content */}
       <motion.div
         className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto"
         style={{ opacity }}
@@ -47,14 +41,7 @@ export function Hero() {
           <span className="text-[var(--site-text-muted)] uppercase tracking-[0.2em] text-xs font-semibold mb-6 block">
             M Moser Associates
           </span>
-          <h1
-            className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-[80px] leading-[0.9] tracking-tight mb-8 text-balance
-                       transition-all duration-[2000ms] ease-out
-                       hover:text-transparent bg-clip-text
-                       bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
-                       bg-[length:200%_auto] animate-gradient
-                       cursor-default"
-          >
+          <h1 className="text-display text-6xl md:text-8xl lg:text-[104px] leading-[0.86] mb-8 text-balance text-[var(--site-text)]">
             M Moser AI Guide
           </h1>
           <p className="text-lg md:text-xl text-[var(--site-text-muted)] max-w-2xl mx-auto font-light leading-relaxed">
@@ -63,7 +50,6 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Animated scroll indicator */}
       <motion.div
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         initial={{ opacity: 0 }}

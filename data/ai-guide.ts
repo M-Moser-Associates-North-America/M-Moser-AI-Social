@@ -2,7 +2,7 @@ export const platforms = [
   {
     id: 'chatgpt',
     name: 'ChatGPT',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_1xifx21xifx21xif.png',
+    logo: 'https://icons.duckduckgo.com/ip3/chatgpt.com.ico',
     mentalModel: 'Thinking Partner',
     bestFor: 'Brainstorming, ideation, exploring options',
     thinkOfItAs: 'The colleague who asks the questions no one else is asking — and helps you see around corners before you walk into a room.',
@@ -18,7 +18,7 @@ export const platforms = [
   {
     id: 'claude',
     name: 'Claude',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_5ss7jo5ss7jo5ss7.png',
+    logo: 'https://icons.duckduckgo.com/ip3/claude.ai.ico',
     mentalModel: 'Super Smart Co-Worker',
     bestFor: 'Task execution, precise drafting, deep analysis',
     thinkOfItAs: 'The sharpest person on the team who also happens to have read everything. Calm, careful, and exceptionally good at producing clean work under pressure.',
@@ -35,7 +35,7 @@ export const platforms = [
   {
     id: 'gemini',
     name: 'Gemini',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_nlfrlenlfrlenlfr.png',
+    logo: 'https://icons.duckduckgo.com/ip3/gemini.google.com.ico',
     mentalModel: 'Creative Partner',
     bestFor: 'Research synthesis, visual ideation, content transformation',
     thinkOfItAs: 'A creative studio and research lab combined — one that can turn a stack of source documents into a podcast, a presentation, or a set of concept visuals.',
@@ -52,7 +52,7 @@ export const platforms = [
   {
     id: 'copilot',
     name: 'Copilot',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_ctwgvwctwgvwctwg.png',
+    logo: 'https://icons.duckduckgo.com/ip3/microsoft.com.ico',
     mentalModel: 'Personal Assistant',
     bestFor: 'Organization, meeting notes, Microsoft 365 workflows',
     thinkOfItAs: "The assistant who handles everything you shouldn't be doing yourself — meeting notes, email summaries, document formatting, data queries — so your time stays on higher-value work.",
@@ -69,7 +69,7 @@ export const platforms = [
   {
     id: 'photoshop-ai',
     name: 'Photoshop AI',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_ivzsrkivzsrkivzs.png',
+    logo: 'https://icons.duckduckgo.com/ip3/adobe.com.ico',
     mentalModel: 'Visual Editor',
     bestFor: 'Editing, refining, and producing design assets',
     thinkOfItAs: "The post-production studio that used to require a specialist and a full day. Now it's a set of tools that any team member can use to get visuals to presentation quality, fast.",
@@ -85,7 +85,7 @@ export const platforms = [
   {
     id: 'perplexity',
     name: 'Perplexity',
-    avatar: 'https://vcpoirxbzfkhetlcvkpw.supabase.co/storage/v1/object/public/Brand/AI%20Avatars/Gemini_Generated_Image_c8de79c8de79c8de.png',
+    logo: 'https://icons.duckduckgo.com/ip3/perplexity.ai.ico',
     mentalModel: 'Research Engine',
     bestFor: 'Current, sourced, auditable intelligence',
     thinkOfItAs: "A research assistant who always shows their work — no hallucinated statistics, no outdated training data, no unsourced claims.",

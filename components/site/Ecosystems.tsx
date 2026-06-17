@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { ecosystems, platforms } from '@/data/ai-guide';
+import { PlatformLogo } from '@/components/ui/PlatformLogo';
 
 /**
  * Tabbed ecosystem explorer — shows features for each AI platform.
@@ -14,14 +14,13 @@ export function Ecosystems() {
 
   return (
     <section
-      className="py-32 px-6 max-w-7xl mx-auto relative z-10 border-t border-[var(--site-border)] scroll-mt-16"
+      className="relative z-10 mx-auto max-w-7xl scroll-mt-16 px-6 py-16 md:py-20"
       id="ecosystems"
     >
-      {/* Section header */}
-      <div className="mb-16">
+      <div className="mb-14 border-b border-[var(--site-border)] pb-8">
         <div className="flex items-center gap-4 mb-6">
-          <span className="font-[var(--font-display)] text-3xl text-[var(--site-text-muted)]">02</span>
-          <h2 className="font-[var(--font-display)] text-4xl md:text-5xl tracking-tight">The Ecosystems</h2>
+          <span className="text-display text-3xl text-[var(--cyan)]">02</span>
+          <h1 className="text-display text-5xl text-[var(--site-text)] md:text-7xl">The Ecosystems</h1>
         </div>
         <p className="text-[var(--site-text-muted)] text-lg max-w-2xl">
           What lives inside each platform beyond the front door. Explore the specific features and
@@ -41,22 +40,13 @@ export function Ecosystems() {
                 key={eco.platformId}
                 onClick={() => setActiveTab(eco.platformId)}
                 className={cn(
-                  'flex items-center gap-3 px-5 py-4 rounded-xl text-left transition-all whitespace-nowrap lg:whitespace-normal',
+                  'flex items-center gap-3 px-5 py-4 rounded-[8px] text-left transition-all whitespace-nowrap lg:whitespace-normal',
                   isActive
-                    ? 'bg-[var(--site-surface)] text-[var(--site-text)]'
+                    ? 'bg-[var(--site-text)] text-[var(--site-bg)]'
                     : 'text-[var(--site-text-muted)] hover:text-[var(--site-text)] hover:bg-[var(--site-surface-hover)]'
                 )}
               >
-                {platform && (
-                  <Image
-                    src={platform.avatar}
-                    alt={platform.name}
-                    width={24}
-                    height={24}
-                    className="w-6 h-6 rounded-full object-cover border border-[var(--site-border)] shrink-0"
-                    referrerPolicy="no-referrer"
-                  />
-                )}
+                {platform && <PlatformLogo name={platform.name} logo={platform.logo} size={24} />}
                 <span className="font-medium">{eco.name}</span>
               </button>
             );
@@ -81,9 +71,9 @@ export function Ecosystems() {
                   {eco.features.map((feature) => (
                     <div
                       key={feature.name}
-                      className="p-6 rounded-xl border border-[var(--site-border)] bg-[var(--site-bg)] hover:border-[var(--site-text-muted)] transition-colors"
+                      className="p-6 rounded-[8px] border border-[var(--site-border)] bg-[var(--site-surface)] hover:border-[var(--site-text-muted)] transition-colors"
                     >
-                      <h4 className="font-medium text-lg mb-2">{feature.name}</h4>
+                      <h4 className="font-bold text-lg mb-2">{feature.name}</h4>
                       <p className="text-sm text-[var(--site-text-muted)] leading-relaxed">
                         {feature.description}
                       </p>

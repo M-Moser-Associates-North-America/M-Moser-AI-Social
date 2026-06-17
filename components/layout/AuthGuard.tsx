@@ -5,10 +5,10 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 
-const publicRoutes = ['/', '/login'];
+const publicRoutes = ['/', '/guide', '/login'];
 
 function isPublicRoute(pathname: string) {
-  return publicRoutes.includes(pathname) || pathname.startsWith('/post/');
+  return publicRoutes.includes(pathname) || pathname.startsWith('/post/') || pathname.startsWith('/workshops');
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
