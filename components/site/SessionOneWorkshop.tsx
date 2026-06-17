@@ -189,6 +189,11 @@ export function SessionOneWorkshop() {
     [activeSection, goToSection]
   );
 
+  const beginSession = useCallback(() => {
+    if (elapsed < totalWorkshopSeconds) setRunning(true);
+    goToSection('roadmap');
+  }, [elapsed, goToSection]);
+
   const toggleComplete = useCallback((id: SectionId) => {
     setCompleted((current) => {
       const next = new Set(current);
@@ -283,6 +288,7 @@ export function SessionOneWorkshop() {
     claimReward,
     liveSectionId,
     goToSection,
+    beginSession,
   };
 
   return (
@@ -461,6 +467,7 @@ type SectionProps = {
   claimReward: () => void;
   liveSectionId?: SectionId;
   goToSection: (id: SectionId) => void;
+  beginSession: () => void;
 };
 
 function SectionRouter({ id, ...props }: { id: SectionId } & SectionProps) {
@@ -726,7 +733,7 @@ function PromptCard({
 // Sections
 // ---------------------------------------------------------------------------
 
-function OpeningSection({ completed, toggleComplete, liveSectionId, goToSection }: SectionProps) {
+function OpeningSection({ completed, toggleComplete, liveSectionId, goToSection, beginSession }: SectionProps) {
   return (
     <div className="relative overflow-hidden rounded-[8px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_20px_70px_rgba(29,29,27,0.1)]">
       <div className="workshop-aurora" />
@@ -756,7 +763,7 @@ function OpeningSection({ completed, toggleComplete, liveSectionId, goToSection 
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button
-              onClick={() => goToSection('enterprise')}
+              onClick={beginSession}
               className="inline-flex items-center gap-2 rounded-[8px] bg-[var(--accent)] px-5 py-3 text-sm font-bold uppercase tracking-[0.1em] text-[var(--accent-fg)] transition-transform hover:-translate-y-0.5"
             >
               <Play className="h-4 w-4" />
