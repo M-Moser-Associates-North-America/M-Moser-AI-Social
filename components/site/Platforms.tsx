@@ -1,44 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from '@/utils/supabase/client';
-import { twMerge } from 'tailwind-merge';
-import { clsx, type ClassValue } from 'clsx';
+import { cn } from '@/lib/utils';
 import { ArrowRight, Info } from 'lucide-react';
-
-/** Local cn helper so this component has no external lib dependency. */
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { platforms } from '@/data/ai-guide';
 
 /**
  * Expandable platform cards (ChatGPT, Claude, Gemini, Copilot, Photoshop AI, Perplexity).
- * Ported from M-Moser-AI-Site-main with no design changes.
  */
 export function Platforms() {
   const [activePlatform, setActivePlatform] = useState<string | null>(null);
-  const [platforms, setPlatforms] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      const { data } = await supabase.from('platforms').select('*').order('order_idx');
-      if (data) {
-        setPlatforms(data);
-      }
-      setIsLoading(false);
-    }
-    loadData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="py-32 px-6 max-w-7xl mx-auto relative z-10 min-h-[500px] flex items-center justify-center">
-        <div className="animate-pulse w-8 h-8 rounded-full bg-[var(--site-text-muted)]" />
-      </section>
-    );
-  }
 
   return (
     <section
@@ -59,7 +32,7 @@ export function Platforms() {
 
       {/* Platform cards grid — clicking a card expands its details */}
       <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-        {platforms.map((platform: any, i: number) => (
+        {platforms.map((platform, i) => (
           <motion.div
             layout
             key={platform.id}
@@ -81,9 +54,11 @@ export function Platforms() {
               )}
             >
               <motion.div layout className="flex justify-between items-start mb-6 w-full">
-                <img
+                <Image
                   src={platform.avatar}
                   alt={platform.name}
+                  width={56}
+                  height={56}
                   className="w-14 h-14 rounded-full object-cover border border-[var(--site-border)]"
                   referrerPolicy="no-referrer"
                 />
@@ -102,10 +77,10 @@ export function Platforms() {
                 layout
                 className="text-xs uppercase tracking-wider text-[var(--site-text-muted)] font-semibold mb-4 w-full"
               >
-                {platform.mental_model}
+                {platform.mentalModel}
               </motion.div>
               <motion.p layout className="text-sm text-[var(--site-text-muted)] leading-relaxed w-full">
-                {platform.best_for}
+                {platform.bestFor}
               </motion.p>
 
               {/* Expanded detail panel */}
@@ -124,7 +99,7 @@ export function Platforms() {
                         <h4 className="text-xs uppercase tracking-widest text-[var(--site-text-muted)] mb-2">
                           Think of it as
                         </h4>
-                        <p className="text-base font-light leading-relaxed">{platform.think_of_it_as}</p>
+                        <p className="text-base font-light leading-relaxed">{platform.thinkOfItAs}</p>
                       </div>
 
                       {/* Best-fit use cases */}
@@ -133,7 +108,7 @@ export function Platforms() {
                           Where it fits best
                         </h4>
                         <ul className="space-y-2">
-                          {platform.where_it_fits_best?.map((item: string, idx: number) => (
+                          {platform.whereItFitsBest.map((item, idx) => (
                             <li
                               key={idx}
                               className="flex items-start gap-3 text-[var(--site-text)] text-sm"

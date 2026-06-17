@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const LEAPTER_REWARDS_TOOL = 'learning_platform_rewards_a_shifting_landscape';
 
 /**
  * Server-side proxy to the Leapter MCP endpoint.
@@ -18,12 +21,36 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   const apiKey = process.env.LEAPTER_API_KEY;
   const mcpUrl = process.env.LEAPTER_MCP_URL;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!apiKey || !mcpUrl) {
+  if (!apiKey || !mcpUrl || !supabaseUrl || !supabaseAnonKey) {
     return NextResponse.json(
-      { error: 'Leapter is not configured. Check LEAPTER_API_KEY and LEAPTER_MCP_URL in .env.local.' },
+      { error: 'Leapter is not configured. Check LEAPTER_API_KEY, LEAPTER_MCP_URL, and Supabase env vars.' },
       { status: 500 }
     );
+  }
+
+  const authorization = req.headers.get('authorization');
+  if (!authorization?.startsWith('Bearer ')) {
+    return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: {
+        Authorization: authorization,
+      },
+    },
+  });
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
 
   // Parse the incoming request body
@@ -39,6 +66,10 @@ export async function POST(req: NextRequest) {
       { error: 'Request must include "tool" and "arguments" fields.' },
       { status: 400 }
     );
+  }
+
+  if (body.tool !== LEAPTER_REWARDS_TOOL) {
+    return NextResponse.json({ error: 'Unsupported Leapter tool.' }, { status: 400 });
   }
 
   // Build the JSON-RPC 2.0 payload for Leapter

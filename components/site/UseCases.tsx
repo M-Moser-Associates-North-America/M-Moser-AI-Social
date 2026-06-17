@@ -1,50 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from '@/utils/supabase/client';
 import { ArrowRight } from 'lucide-react';
+import { platforms, roles, useCases } from '@/data/ai-guide';
 
 /**
  * Role-based use-cases explorer — shows practical AI applications per role.
- * Ported from M-Moser-AI-Site-main with CSS variables updated to --site-* tokens.
  */
 export function UseCases() {
   const [activeRole, setActiveRole] = useState<string | null>(null);
-  const [roles, setRoles] = useState<any[]>([]);
-  const [useCases, setUseCases] = useState<any[]>([]);
-  const [platforms, setPlatforms] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      const [rolesRes, ucRes, platsRes] = await Promise.all([
-        supabase.from('roles').select('*').order('order_idx'),
-        supabase.from('use_cases').select('*').order('order_idx'),
-        supabase.from('platforms').select('*').order('order_idx'),
-      ]);
-
-      if (rolesRes.data && ucRes.data && platsRes.data) {
-        setRoles(rolesRes.data);
-        setUseCases(ucRes.data);
-        setPlatforms(platsRes.data);
-      }
-      setIsLoading(false);
-    }
-    loadData();
-  }, []);
 
   const filteredCases = activeRole
-    ? useCases.filter((uc: any) => uc.role_name === activeRole || uc.role_name === 'All Roles')
+    ? useCases.filter((uc) => uc.role === activeRole || uc.role === 'All Roles')
     : useCases;
-
-  if (isLoading) {
-    return (
-      <section className="py-32 px-6 max-w-7xl mx-auto relative z-10 border-t border-[var(--site-border)] min-h-[500px] flex items-center justify-center">
-        <div className="animate-pulse w-8 h-8 rounded-full bg-[var(--site-text-muted)]" />
-      </section>
-    );
-  }
 
   return (
     <section
@@ -81,9 +51,8 @@ export function UseCases() {
           All Roles
         </button>
         {roles
-          .filter((r: any) => r.name !== 'All Roles')
-          .map((roleObj: any) => {
-            const role = roleObj.name;
+          .filter((role) => role !== 'All Roles')
+          .map((role) => {
             return (
               <button
                 key={role}
@@ -103,13 +72,13 @@ export function UseCases() {
       {/* Use-case cards grid — animates when filter changes */}
       <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence>
-          {filteredCases.map((uc: any, idx: number) => {
-            const platform = platforms.find((p: any) => p.id === uc.platform_id);
+          {filteredCases.map((uc, idx) => {
+            const platform = platforms.find((p) => p.id === uc.platformId);
 
             return (
               <motion.div
                 layout
-                key={`${uc.role_name}-${uc.platform_id}-${idx}`}
+                key={`${uc.role}-${uc.platformId}-${idx}`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -119,9 +88,11 @@ export function UseCases() {
                 {/* Platform logo + name */}
                 <div className="flex items-center gap-3 mb-6">
                   {platform && (
-                    <img
+                    <Image
                       src={platform.avatar}
                       alt={platform.name}
+                      width={32}
+                      height={32}
                       className="w-8 h-8 rounded-full object-cover border border-[var(--site-border)] shrink-0"
                       referrerPolicy="no-referrer"
                     />
@@ -139,7 +110,7 @@ export function UseCases() {
                 {/* Footer: role label + arrow */}
                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-[var(--site-border)]">
                   <span className="text-xs uppercase tracking-widest text-[var(--site-text-muted)]">
-                    {uc.role_name}
+                    {uc.role}
                   </span>
                   <a
                     href="#platforms"

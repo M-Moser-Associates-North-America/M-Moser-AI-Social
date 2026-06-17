@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { platforms } from '@/data/ai-guide';
+import { supabase } from '@/lib/supabase/client';
 
 /**
  * The reward result returned by Leapter after processing a user's activity.
@@ -30,11 +31,14 @@ export async function recalculateRewards(
   userId: string,
   toolUsed?: string
 ): Promise<LeapterRewardResult | null> {
-  // Use the public Supabase client from the browser environment.
-  // We only need read access here; writes use service-level anon key RLS policies.
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    console.error('[Gamification] Cannot recalculate rewards without an authenticated session.');
+    return null;
+  }
 
   // --- 1. Gather the user's current activity counts ---
   const [postsResult, repliesResult, profileResult, allPointsResult] = await Promise.all([
@@ -90,10 +94,8 @@ export async function recalculateRewards(
     (row: { total_points: number }) => row.total_points ?? 0
   );
 
-  // Fetch all tools from Supabase to check if the tool is "custom" or predefined
-  const { data: platformsData } = await supabase.from('platforms').select('name');
-  const predefinedTools = platformsData ? platformsData.map(p => p.name) : [];
-  
+  const predefinedTools = platforms.map((platform) => platform.name);
+
   const isNewTool =
     !!toolUsed && !predefinedTools.includes(toolUsed) && !currentHasUsedNewTool;
 
@@ -104,7 +106,10 @@ export async function recalculateRewards(
   try {
     const response = await fetch('/api/leapter', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
       body: JSON.stringify({
         tool: 'learning_platform_rewards_a_shifting_landscape',
         arguments: {

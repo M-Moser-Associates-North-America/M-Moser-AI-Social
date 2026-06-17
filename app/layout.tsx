@@ -1,13 +1,7 @@
 import type {Metadata} from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-import { AuthGuard } from '@/components/AuthGuard';
-import { ThemeProvider } from '@/components/ThemeProvider';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
+import { AuthGuard } from '@/components/layout/AuthGuard';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'M Moser AI Hub',
@@ -16,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       {/* suppressHydrationWarning on <body> because next-themes writes data-theme
           before React hydration, which would otherwise cause a mismatch warning. */}
       <body

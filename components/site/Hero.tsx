@@ -3,10 +3,7 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 
-/**
- * Full-screen hero section with parallax video background.
- * Ported from M-Moser-AI-Site-main with no design changes.
- */
+/** Full-screen hero section with parallax video background. */
 export function Hero() {
   const { scrollY } = useScroll();
   // Parallax: background moves down as user scrolls
@@ -58,11 +55,10 @@ export function Hero() {
                        bg-[length:200%_auto] animate-gradient
                        cursor-default"
           >
-            This whole site was made with AI so you can learn AI.
+            M Moser AI Guide
           </h1>
           <p className="text-lg md:text-xl text-[var(--site-text-muted)] max-w-2xl mx-auto font-light leading-relaxed">
-            A guide to the platforms, ecosystems, and practical applications of artificial
-            intelligence in our daily work.
+            Practical ways to choose and apply AI tools across strategy, design, delivery, and operations.
           </p>
         </motion.div>
       </motion.div>
