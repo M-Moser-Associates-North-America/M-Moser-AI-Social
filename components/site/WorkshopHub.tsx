@@ -12,6 +12,7 @@ import {
   LockKeyhole,
   Presentation,
   Route,
+  Video,
 } from 'lucide-react';
 import { workshopSessions } from '@/data/workshops';
 import { agenda } from '@/data/session-one';
@@ -129,6 +130,7 @@ export function WorkshopHub() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {workshopSessions.map((session, index) => {
             const isAvailable = session.status === 'available';
+            const recapUrl = session.resources?.recapUrl;
             const card = (
               <motion.article
                 initial={{ opacity: 0, y: 22 }}
@@ -160,20 +162,42 @@ export function WorkshopHub() {
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--site-text-muted)]">
                   {session.outcome}
                 </p>
-                <div className="mt-6 flex items-center justify-between border-t border-[var(--site-border)] pt-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--site-text-muted)]">
-                  <span>{isAvailable ? 'Open session' : 'Planned'}</span>
-                  <ArrowUpRight className="h-4 w-4" />
+                <div className="mt-6 border-t border-[var(--site-border)] pt-4">
+                  {isAvailable ? (
+                    <div className="grid gap-2">
+                      <Link
+                        href={session.href}
+                        className="inline-flex min-h-10 items-center justify-between gap-3 rounded-[8px] bg-[var(--accent)] px-3 py-2 text-xs font-bold uppercase tracking-[0.1em] text-[var(--accent-fg)] transition-transform hover:-translate-y-0.5"
+                      >
+                        <span>Open session</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Link>
+                      {recapUrl && (
+                        <a
+                          href={recapUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex min-h-10 items-center justify-between gap-3 rounded-[8px] border-2 border-[var(--border-strong)] bg-[var(--surface-sub)]/70 px-3 py-2 text-xs font-bold uppercase tracking-[0.1em] text-[var(--site-text)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface-warm)] hover:text-[var(--accent)]"
+                        >
+                          <span className="inline-flex items-center gap-2">
+                            <Video className="h-4 w-4" />
+                            {session.resources?.recapLabel ?? 'Teams recap'}
+                          </span>
+                          <ArrowUpRight className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.1em] text-[var(--site-text-muted)]">
+                      <span>Planned</span>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </div>
+                  )}
                 </div>
               </motion.article>
             );
 
-            return isAvailable ? (
-              <Link key={session.id} href={session.href} className="block">
-                {card}
-              </Link>
-            ) : (
-              <div key={session.id}>{card}</div>
-            );
+            return <div key={session.id}>{card}</div>;
           })}
         </div>
       </div>

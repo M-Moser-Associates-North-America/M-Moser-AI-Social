@@ -24,6 +24,7 @@ import {
   RotateCcw,
   Sparkles,
   Timer,
+  Video,
 } from 'lucide-react';
 import { CelebrationModal } from '@/components/community/CelebrationModal';
 import {
@@ -69,6 +70,7 @@ const sectionOrder = navSections.map((section) => section.id);
 // Opening is framing, Roadmap/Library are reference — they are not completable blocks.
 const completableIds: SectionId[] = ['enterprise', 'models', 'delegation', 'customizing', 'lab'];
 const isCompletable = (id: SectionId) => completableIds.includes(id);
+const sessionOne = workshopSessions.find((session) => session.id === 'session-1');
 
 const agendaTimeline = agenda.reduce<{ id: SectionId; start: number; end: number }[]>((acc, item) => {
   const start = acc.length ? acc[acc.length - 1].end : 0;
@@ -734,6 +736,8 @@ function PromptCard({
 // ---------------------------------------------------------------------------
 
 function OpeningSection({ completed, toggleComplete, liveSectionId, goToSection, beginSession }: SectionProps) {
+  const recapUrl = sessionOne?.resources?.recapUrl;
+
   return (
     <div className="relative overflow-hidden rounded-[8px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_20px_70px_rgba(29,29,27,0.1)]">
       <div className="workshop-aurora" />
@@ -776,6 +780,18 @@ function OpeningSection({ completed, toggleComplete, liveSectionId, goToSection,
               <Sparkles className="h-4 w-4 text-[var(--accent)]" />
               Open prompt builder
             </button>
+            {recapUrl && (
+              <a
+                href={recapUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-[8px] border-2 border-[var(--border-strong)] bg-[var(--surface-sub)]/80 px-5 py-3 text-sm font-bold uppercase tracking-[0.1em] text-[var(--text)] backdrop-blur transition-transform hover:-translate-y-0.5 hover:border-[var(--accent)] hover:bg-[var(--surface-warm)] hover:text-[var(--accent)]"
+              >
+                <Video className="h-4 w-4" />
+                {sessionOne?.resources?.recapLabel ?? 'Teams recap'}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </motion.div>
 

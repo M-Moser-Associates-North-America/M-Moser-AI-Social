@@ -6,6 +6,10 @@ export type WorkshopSession = {
   outcome: string;
   href: string;
   status: 'available' | 'planned';
+  resources?: {
+    recapLabel?: string;
+    recapUrl?: string;
+  };
 };
 
 export const workshopSessions: WorkshopSession[] = [
@@ -17,6 +21,11 @@ export const workshopSessions: WorkshopSession[] = [
     outcome: 'Use Enterprise safely, choose the right work mode, and delegate clearly.',
     href: '/workshops/session-1',
     status: 'available',
+    resources: {
+      recapLabel: 'Teams recap',
+      recapUrl:
+        'https://teams.microsoft.com/l/meetingrecap?driveId=b%21wL0180VfDUuSou1JqDiydPyIbgNV411EnT1anOlmwDjg-Wq14q9jTImzyuffYQvV&driveItemId=01XI57COOUIK53CH6PUBB3E4CWCGI5TRY6&sitePath=https%3A%2F%2Fmmoser1-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Falinap_mmoser_com%2FIQDUQruxH8-gQ7JwVhGR2cceAYBmwzM_537Fusij98GnX88&fileUrl=https%3A%2F%2Fmmoser1-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Falinap_mmoser_com%2FIQDUQruxH8-gQ7JwVhGR2cceAYBmwzM_537Fusij98GnX88&iCalUid=040000008200E00074C5B7101A82E00807EA061297E91B1C64F8DC010000000000000000100000000E88F6B445727A45AFA65E5C079BA9F1&masterICalUid=040000008200e00074c5b7101a82e0080000000097e91b1c64f8dc010000000000000000100000000e88f6b445727a45afa65e5c079ba9f1&threadId=19%3Ameeting_ZWJmMTE4NWUtOGE0Zi00ZDIzLThlZTctNWYyMjM1MTk3MDAw%40thread.v2&organizerId=2ab73bd4-b86c-4a7c-85eb-09853489b0a1&tenantId=7bf43d7b-a87b-465d-80e2-ef19c6e3a17e&callId=655e28b0-e3fc-42b0-a3ef-ba55dc1010a1&threadType=Meeting&meetingType=Recurring&subType=RecapSharingLink_RecapChiclet',
+    },
   },
   {
     id: 'session-2',
